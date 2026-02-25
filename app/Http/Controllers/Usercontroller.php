@@ -27,13 +27,23 @@ class Usercontroller extends Controller
     {
         $req = $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
         ]);
 
-        $data = $request->all();
-        User::create($data);
-        return redirect()->back()->with('success', 'User registered successfully!');
+
+
+
+        $User = User::create($req);
+        // dd($User);
+        if ($User) {
+            // return $User;
+            return redirect()->back()->with('success', 'User registered successfully!');
+        } else {
+            // return $User;
+            return redirect()->back()->with('error', 'Failed to register user. Please try again.');
+        }
+        // return redirect()->back()->with('success', 'User registered successfully!');
     }
 
     /**

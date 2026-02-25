@@ -11,10 +11,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+    public function index() {}
 
     /**
      * Show the form for creating a new resource.
@@ -51,7 +48,8 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::find($id);
+        return view('edit_post', compact('post'));
     }
 
     /**
@@ -59,7 +57,13 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validate = $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+        $post = Post::find($id);
+        $post->update($validate);
+        return redirect()->route('mypost')->with('success', 'Post updated successfully!');
     }
 
     /**
@@ -67,6 +71,8 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $id = Post::find($id);
+        $id->delete();
+        return redirect()->route('mypost')->with('success', 'Post deleted successfully!');
     }
 }

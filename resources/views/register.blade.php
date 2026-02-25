@@ -10,6 +10,16 @@
 
 <body>
     <div class="container">
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
         <h1>Register</h1>
         <form method="POST" action="{{ route('registeruser.store') }}">
             @csrf
@@ -27,6 +37,7 @@
             </div>
             <button type="submit" class="btn btn-primary">Register</button>
         </form>
+        <a href="{{route('login')}}">Already have an account? Login here</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
