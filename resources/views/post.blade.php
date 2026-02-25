@@ -10,9 +10,14 @@
 
 <body>
     <div class="container">
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
         <h1>Post</h1>Welcome, {{ session('user')->name }}!
         <p>This is the post page. Only authenticated users can see this page.</p>
-        <button type="submit" class="btn btn-primary">Add Post</button>
+        <a href="{{route('add_post')}}"><button type="submit" class="btn btn-primary">Add Post</button></a>
         <button type="submit" class="btn btn-success">My Post</button>
         <a href="{{route('logout')}}"><button class="btn btn-danger">Logout</button></a>
 
