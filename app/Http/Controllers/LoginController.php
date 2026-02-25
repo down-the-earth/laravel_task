@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Session;
+
+
 class LoginController extends Controller
 {
     public function index()
@@ -24,9 +27,20 @@ class LoginController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ])) {
+            $id = Auth::id();
+            $user = User::find($id);
+            session(['user' => $user]);
+
             return redirect()->route('post')->with('success', 'Login successful!');
         } else {
             return back()->withErrors(['email' => 'Invalid email or password.']);
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+        Session::flush();
+        return redirect()->route('login')->with('success', 'Logout successful!');
     }
 }

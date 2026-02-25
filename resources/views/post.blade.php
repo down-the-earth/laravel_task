@@ -10,11 +10,11 @@
 
 <body>
     <div class="container">
-        <h1>Post</h1>
+        <h1>Post</h1>Welcome, {{ session('user')->name }}!
         <p>This is the post page. Only authenticated users can see this page.</p>
         <button type="submit" class="btn btn-primary">Add Post</button>
         <button type="submit" class="btn btn-success">My Post</button>
-        <button class="btn btn-danger">Logout</button>
+        <a href="{{route('logout')}}"><button class="btn btn-danger">Logout</button></a>
 
 
     </div>

@@ -18,3 +18,4 @@ Route::resource('registeruser', Usercontroller::class)->middleware(ValidUser::cl
 Route::get('/post', function () {
     return view('post');
 })->name('post')->middleware(ValidUser::class);
+Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware(ValidUser::class);
