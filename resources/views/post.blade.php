@@ -51,6 +51,13 @@
                                     <div class="card-body">
                                         <p class="card-text">{{ $comment->content }}</p>
                                         <small class="text-muted">Commented by {{ $comment->user->name }} on {{ $comment->created_at->format('F j, Y, g:i a') }}</small>
+                                        @if($comment->user_id == session('user')->id)
+                                        <form action="{{ route('comment.destroy', $comment->id) }}" method="POST" class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm float-end">Delete</button>
+                                        </form>
+                                        @endif
                                     </div>
                                 </div>
                                 @endforeach
