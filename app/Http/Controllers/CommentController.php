@@ -3,27 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\CommentModel;
 use App\Models\Post;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
-
-class PostController extends Controller
+class CommentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-
-        $posts = Post::with('user', 'comments.user')
-            ->whereNotIn('user_id', [session('user')->id])
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-
-        return view('post', compact('posts'));
-        // return  $posts;
+        //
     }
 
     /**
@@ -40,12 +31,14 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
+            'post_id' => 'required|exists:posts,id',
             'user_id' => 'required|exists:users,id',
-            'title' => 'required',
             'content' => 'required',
         ]);
-        Post::create($validate);
-        return redirect()->route('posts')->with('success', 'Post created successfully!');
+
+
+        CommentModel::create($validate);
+        return redirect()->back()->with('success', 'Comment added successfully!');
     }
 
     /**
@@ -61,8 +54,7 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        $post = Post::find($id);
-        return view('edit_post', compact('post'));
+        //
     }
 
     /**
@@ -70,13 +62,7 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validate = $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-        ]);
-        $post = Post::find($id);
-        $post->update($validate);
-        return redirect()->route('mypost')->with('success', 'Post updated successfully!');
+        //
     }
 
     /**
@@ -84,8 +70,6 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        $id = Post::find($id);
-        $id->delete();
-        return redirect()->route('mypost')->with('success', 'Post deleted successfully!');
+        //
     }
 }

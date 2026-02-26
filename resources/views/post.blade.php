@@ -22,11 +22,10 @@
         <a href="{{route('logout')}}"><button class="btn btn-danger">Logout</button></a>
         <hr>
 
-        @foreach($users as $user)
+        @foreach($posts as $post)
         <div class="card mb-3">
             <div class="card-body">
-                <div class="card-header">Author: <strong>{{ $user->name }}</strong></div>
-                @foreach($user->posts as $post)
+                <div class="card-header">Author: <strong>{{ $post->user->name }}</strong></div>
                 <div class="card mt-2">
                     <div>
 
@@ -36,21 +35,40 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted">Posted on {{ $post->created_at->format('F j, Y, g:i a') }}</small>
+                            <form action="{{ route('comment.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="post_id" value="{{ $post->id }}">
+                                <input type="hidden" name="user_id" value="{{ session('user')->id }}">
+                                <textarea name="content" id="cmt-{{ $post->id }}" class="form-control mt-2" placeholder="Add a comment..." rows="2"></textarea>
+
+
+                                <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
+                            </form>
+                            <div class="mt-3">
+                                <h6>Comments:</h6>
+                                @foreach($post->comments as $comment)
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <p class="card-text">{{ $comment->content }}</p>
+                                        <small class="text-muted">Commented by {{ $comment->user->name }} on {{ $comment->created_at->format('F j, Y, g:i a') }}</small>
+                                    </div>
+                                </div>
+                                @endforeach
+
+                            </div>
 
                         </div>
 
                     </div>
 
+
                 </div>
-                @endforeach
-
             </div>
+            @endforeach
+
+
         </div>
-        @endforeach
-
-
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 
 </html>

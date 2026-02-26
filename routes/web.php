@@ -5,6 +5,8 @@ use App\Http\Controllers\Usercontroller;
 use App\Http\Middleware\ValidUser;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,4 +31,5 @@ Route::middleware([ValidUser::class])->group(function () {
     Route::view('/post/addpost', 'add_post')->name('add_post');
     Route::resource('/post', PostController::class)->name('*', 'post.');
     Route::get('/mypost', [LoginController::class, 'mypost'])->name('mypost');
+    Route::resource('comment', CommentController::class)->name('*', 'comment.');
 });
