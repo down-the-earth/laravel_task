@@ -5,13 +5,24 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index() {}
+    public function index()
+    {
+        $users = User::with('posts')
+            ->whereNotIn('id', [session('user')->id])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        // $posts = Post::where('user_id', session('user')->id)->get();
+        return view('post', compact('users'));
+        // return  $user;
+    }
 
     /**
      * Show the form for creating a new resource.

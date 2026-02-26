@@ -32,7 +32,7 @@ class LoginController extends Controller
             $user = User::find($id);
             session(['user' => $user]);
 
-            return redirect()->route('posts')->with('success', 'Login successful!');
+            return redirect()->route('post.index')->with('success', 'Login successful!');
         } else {
             return back()->withErrors(['email' => 'Invalid email or password.']);
         }

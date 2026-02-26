@@ -20,9 +20,9 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
 Route::resource('registeruser', Usercontroller::class)->name('*', 'registeruser.');
 Route::middleware([ValidUser::class])->group(function () {
-    Route::get('/posts', function () {
-        return view('post');
-    })->name('posts');
+    // Route::get('/posts', function () {
+    //     return view('post');
+    // })->name('posts');
 
 
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware(ValidUser::class);

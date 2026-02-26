@@ -20,6 +20,33 @@
         <a href="{{route('add_post')}}"><button type="submit" class="btn btn-primary">Add Post</button></a>
         <a href="{{route('mypost')}}"><button type="submit" class="btn btn-success">My Post</button></a>
         <a href="{{route('logout')}}"><button class="btn btn-danger">Logout</button></a>
+        <hr>
+
+        @foreach($users as $user)
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="card-header">Author: <strong>{{ $user->name }}</strong></div>
+                @foreach($user->posts as $post)
+                <div class="card mt-2">
+                    <div>
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $post->title }}</h5>
+                            <p class="card-text">{{ $post->content }}</p>
+                        </div>
+                        <div class="card-footer">
+                            <small class="text-muted">Posted on {{ $post->created_at->format('F j, Y, g:i a') }}</small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                @endforeach
+
+            </div>
+        </div>
+        @endforeach
 
 
     </div>
