@@ -19,6 +19,8 @@ class ValidUser
         // echo "Middleware is working";
         if (!Auth::check()) {
             return redirect('/register');
+        } else if (!session('user')) {
+            return redirect('/login');
         }
         return $next($request);
     }

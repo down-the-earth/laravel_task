@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Post;
+use App\Rules\Loginrule;
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Session;
@@ -20,7 +21,7 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'email' => ['required', 'email', new Loginrule],
             'password' => 'required',
         ]);
 
