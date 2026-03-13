@@ -16,4 +16,14 @@ class CommentModel extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function getContentAttribute($value)
+    {
+        return ucfirst($value);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return date('d M Y, h:i A', strtotime($value));
+    }
 }

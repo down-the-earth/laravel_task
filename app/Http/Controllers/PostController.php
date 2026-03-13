@@ -45,7 +45,7 @@ class PostController extends Controller
             'content' => 'required',
         ]);
         Post::create($validate);
-        return redirect()->route('posts')->with('success', 'Post created successfully!');
+        return redirect()->route('post')->with('success', 'Post created successfully!');
     }
 
     /**

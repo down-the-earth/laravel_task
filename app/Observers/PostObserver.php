@@ -14,6 +14,7 @@ class PostObserver
         //
     }
 
+
     /**
      * Handle the POST "updated" event.
      */

@@ -33,6 +33,11 @@ class User extends Authenticatable
         return $this->hasMany(CommentModel::class);
     }
 
+    public function getNameAttribute($value)
+    {
+        return ucwords($value);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

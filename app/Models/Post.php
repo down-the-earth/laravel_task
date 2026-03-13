@@ -16,6 +16,16 @@ class Post extends Model
         return $this->hasMany(CommentModel::class);
     }
 
+    public function getTitleAttribute($value)
+    {
+        return ucwords($value);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        return date('d M Y, h:i A', strtotime($value));
+    }
+
     // Using Model Events to delete comments when a post is deleted
     // protected static function booted(): void
     // {
