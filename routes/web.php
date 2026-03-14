@@ -20,7 +20,7 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
 
 
-Route::resource('registeruser', Usercontroller::class)->name('*', 'registeruser.');
+Route::resource('profile', Usercontroller::class)->names('profile');
 Route::middleware([ValidUser::class])->group(function () {
     // Route::get('/posts', function () {
     //     return view('post');
@@ -29,7 +29,7 @@ Route::middleware([ValidUser::class])->group(function () {
 
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware(ValidUser::class);
     Route::view('/post/addpost', 'add_post')->name('add_post');
-    Route::resource('/post', PostController::class)->name('*', 'post.');
+    Route::resource('/post', PostController::class)->names('post');
     Route::get('/mypost', [LoginController::class, 'mypost'])->name('mypost');
-    Route::resource('comment', CommentController::class)->name('*', 'comment.');
+    Route::resource('comment', CommentController::class)->names('comment');
 });

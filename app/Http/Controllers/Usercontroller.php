@@ -12,7 +12,10 @@ class Usercontroller extends Controller
      */
     public function index()
     {
-        //
+        // Profile page
+        $user = User::find($userId = session('user')->id);
+        // return $user;
+        return view('profile', compact('user'));
     }
 
     /**
