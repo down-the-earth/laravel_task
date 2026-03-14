@@ -19,8 +19,8 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
 
-
 Route::resource('profile', Usercontroller::class)->names('profile');
+
 Route::middleware([ValidUser::class])->group(function () {
     // Route::get('/posts', function () {
     //     return view('post');

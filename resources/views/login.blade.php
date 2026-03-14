@@ -11,6 +11,16 @@
 <body>
     <div class="container">
         <h1>Login</h1>
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
+        @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+        @endif
         <form method="POST" action="{{ route('login.submit') }}">
             @csrf
             <div class="mb-3">

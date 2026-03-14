@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -37,6 +38,20 @@ class User extends Authenticatable
     {
         return ucwords($value);
     }
+
+    protected function Email(): Attribute
+    {
+        return Attribute::make(
+            set: fn($value) => strtolower($value),
+            get: fn($value) => strtolower($value),
+        );
+    }
+
+    // Using Mutators to email automatically lowercase before saving to database
+    // public function setEmailAttribute($value)
+    // {
+    //     $this->attributes['email'] = strtolower($value);
+    // }
 
     /**
      * The attributes that should be hidden for serialization.

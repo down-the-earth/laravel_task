@@ -41,7 +41,7 @@ class Usercontroller extends Controller
         // dd($User);
         if ($User) {
             // return $User;
-            return redirect()->back()->with('success', 'User registered successfully!');
+            return redirect()->route('login')->with('success', 'User registered successfully!');
         } else {
             // return $User;
             return redirect()->back()->with('error', 'Failed to register user. Please try again.');
