@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Models\Post;
 use App\Rules\Loginrule;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 
 
@@ -26,6 +26,8 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
+
+
         if (Auth::attempt([
             'email' => $request->email,
             'password' => $request->password
@@ -34,7 +36,15 @@ class LoginController extends Controller
             $user = User::find($id);
             session(['user' => $user]);
 
-            return redirect()->route('post.index')->with('success', 'Login successful!');
+            // Check if the user's email is verified using the defined gate
+            if (Gate::allows('verify-email')) {
+                return redirect()->route('post.index')->with('success', 'Login successful!');
+            } else {
+                Auth::logout();
+                Session::flush();
+                return back()->withErrors(['email' => 'Please verify your email before logging in.']);
+            }
+            // return redirect()->route('post.index')->with('success', 'Login successful!');
         } else {
             return back()->withErrors(['email' => 'Invalid email or password.']);
         }

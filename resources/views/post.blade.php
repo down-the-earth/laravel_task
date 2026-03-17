@@ -36,6 +36,7 @@
                         </div>
                         <div class="card-footer">
                             <small class="text-muted">Posted on {{ $post->created_at }}</small>
+                            @can ('verify-email')
                             <form action="{{ route('comment.store') }}" method="POST">
                                 @csrf
                                 <input type="hidden" name="post_id" value="{{ $post->id }}">
@@ -45,6 +46,8 @@
 
                                 <button type="submit" class="btn btn-primary mt-2">Add Comment</button>
                             </form>
+                            @endcan
+
                             <div class="mt-3">
                                 <h6>Comments:</h6>
                                 @foreach($post->comments as $comment)
@@ -52,13 +55,14 @@
                                     <div class="card-body">
                                         <p class="card-text">{{ $comment->content }}</p>
                                         <small class="text-muted">Commented by {{ $comment->user->name }} on {{ $comment->created_at }}</small>
-                                        @if($comment->user_id == session('user')->id)
+                                        @can('delete', $comment)
                                         <form action="{{ route('comment.destroy', $comment->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-danger btn-sm float-end">Delete</button>
                                         </form>
-                                        @endif
+                                        @endcan
+
                                     </div>
                                 </div>
                                 @endforeach
