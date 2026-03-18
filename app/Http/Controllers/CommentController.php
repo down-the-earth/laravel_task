@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\CommentModel;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -68,10 +69,19 @@ class CommentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    // public function destroy(string $id)
+    // {
+    //     Gate::authorize('delete', $id);
+    //     $id = CommentModel::find($id);
+    //     $id->delete();
+    //     return redirect()->back()->with('success', 'Comment deleted successfully!');
+    // }
+    public function destroy(CommentModel $comment)
     {
-        $id = CommentModel::find($id);
-        $id->delete();
+        Gate::authorize('delete', $comment);
+
+        $comment->delete();
+
         return redirect()->back()->with('success', 'Comment deleted successfully!');
     }
 }

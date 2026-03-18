@@ -1,11 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Usercontroller;
-use App\Http\Middleware\ValidUser;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Emailcontroller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Usercontroller;
+use App\Http\Middleware\ValidUser;
+use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', function () {
@@ -32,4 +33,5 @@ Route::middleware([ValidUser::class])->group(function () {
     Route::resource('/post', PostController::class)->names('post');
     Route::get('/mypost', [LoginController::class, 'mypost'])->name('mypost');
     Route::resource('comment', CommentController::class)->names('comment');
+    Route::get('/send-email', [Emailcontroller::class, 'sendEmail'])->name('send.email');
 });
