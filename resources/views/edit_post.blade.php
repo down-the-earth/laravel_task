@@ -11,7 +11,7 @@
 <body>
     <h1>Edit Post</h1>
     <div class="container">
-        <form method="POST" action="{{ route('post.update', $post->id) }}">
+        <form method="POST" action="{{ route('post.update', $post->id) }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="mb-3">
@@ -21,6 +21,15 @@
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
                 <textarea class="form-control" id="content" name="content" rows="5" required>{{ $post->content }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" id="image" name="image" value="{{ $post->image }}">
+                @if($post->image)
+                <img src="{{ asset($post->image) }}" class="img-thumbnail mt-2" alt="{{ $post->title }}" style="max-width: 200px; max-height: 200px;">
+                @endif
+
+
             </div>
             <input type="hidden" name="user_id" value="{{ session('user')->id }}">
             <button type="submit" class="btn btn-primary">Update</button>

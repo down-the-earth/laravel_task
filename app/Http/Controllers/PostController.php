@@ -43,7 +43,14 @@ class PostController extends Controller
             'user_id' => 'required|exists:users,id',
             'title' => 'required',
             'content' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $validate['image'] = 'images/' . $imageName;
+        }
         Post::create($validate);
         return redirect()->route('post')->with('success', 'Post created successfully!');
     }
@@ -73,8 +80,19 @@ class PostController extends Controller
         $validate = $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
         $post = Post::find($id);
+        if ($request->hasFile('image')) {
+            $imageName = time() . '.' . $request->image->extension();
+            $request->image->move(public_path('images'), $imageName);
+            $validate['image'] = 'images/' . $imageName;
+            // Delete old image if exists
+            if ($post->image && file_exists(public_path($post->image))) {
+                unlink(public_path($post->image));
+            }
+        }
+
         $post->update($validate);
         return redirect()->route('mypost')->with('success', 'Post updated successfully!');
     }

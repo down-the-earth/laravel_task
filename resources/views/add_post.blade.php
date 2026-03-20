@@ -11,7 +11,7 @@
 <body>
     <h1>Add New Post</h1>
     <div class="container">
-        <form method="POST" action="{{ route('post.store') }}">
+        <form method="POST" action="{{ route('post.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
@@ -20,6 +20,10 @@
             <div class="mb-3">
                 <label for="content" class="form-label">Content</label>
                 <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Image</label>
+                <input type="file" class="form-control" id="image" name="image">
             </div>
             <input type="hidden" name="user_id" value="{{ session('user')->id }}">
             <button type="submit" class="btn btn-primary">Submit</button>
