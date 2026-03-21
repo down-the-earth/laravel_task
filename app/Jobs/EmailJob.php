@@ -6,6 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeEmail;
+use App\Mail\SendEmail;
 
 class EmailJob implements ShouldQueue
 {
@@ -25,6 +26,6 @@ class EmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to('gaonkars193@gmail.com')->send(new WelcomeEmail('Your post has been updated successfully!', $this->filename));
+        Mail::to('shubhamgaonkar@mailinator.com')->send(new WelcomeEmail('Your post has been updated successfully!', $this->filename));
     }
 }
