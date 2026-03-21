@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeEmail;
+use App\Jobs\EmailJob;
 
 class PostController extends Controller
 {
@@ -94,6 +96,7 @@ class PostController extends Controller
         }
 
         $post->update($validate);
+        dispatch(new EmailJob($validate['image']));
         return redirect()->route('mypost')->with('success', 'Post updated successfully!');
     }
 
