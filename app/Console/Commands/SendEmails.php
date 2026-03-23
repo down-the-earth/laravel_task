@@ -14,7 +14,7 @@ class SendEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'send:emails';
+    protected $signature = 'send:emails {user=shubham}';
 
     /**
      * The console command description.
@@ -34,5 +34,6 @@ class SendEmails extends Command
             Mail::to('shubhamgaonkar@mailinator.com')->send(new SendEmail());
         }
         $this->info('Emails sent successfully!');
+        // $this->info('Sending email to: ' . $this->argument('user'));
     }
 }
