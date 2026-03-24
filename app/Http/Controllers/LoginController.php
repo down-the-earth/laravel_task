@@ -9,7 +9,7 @@ use App\Rules\Loginrule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
-
+use Yajra\DataTables\Facades\DataTables;
 
 class LoginController extends Controller
 {
@@ -59,7 +59,28 @@ class LoginController extends Controller
 
     public function mypost()
     {
-        $posts = Post::where('user_id', session('user')->id)->get();
+        // $posts = Post::where('user_id', session('user')->id)->get();
+        $posts = Post::paginate(1);
+
+        if (request()->ajax()) {
+
+            $data = Post::select('*');
+
+            return Datatables::of($data)
+
+                ->addIndexColumn()
+
+                ->addColumn('action', function ($row) {
+
+                    $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
+
+                    return $btn;
+                })
+
+                ->rawColumns(['action'])
+
+                ->make(true);
+        }
         return view('my_post', compact('posts'));
     }
 }

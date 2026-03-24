@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+
 use App\Models\User;
+use Illuminate\Http\Request;
+
 
 class Usercontroller extends Controller
 {
