@@ -26,6 +26,9 @@ class PostApiController extends Controller
     public function store(Request $request)
     {
         //
+        $post = Post::create($request->all());
+        return response()->json($post, 201);
+
     }
 
     /**
@@ -33,7 +36,8 @@ class PostApiController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = Post::with('user', 'comments')->findOrFail($id);
+        return response()->json($post);
     }
 
     /**
@@ -41,7 +45,14 @@ class PostApiController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        // if (Auth::id() !== $post->user_id) {
+        //     return response()->json(['message' => 'Unauthorized'], 403);
+        // }
+
+        $post->update($request->all());
+        return response()->json($post);
     }
 
     /**

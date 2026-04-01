@@ -10,3 +10,8 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command(SendEmails::class)->EveryFiveSeconds();
+
+// Artisan::command(SendEmails::class, function () {
+//     $this->comment('Sending emails to users...');
+// })->describe('Send emails to users');
+// Artisan::command(SendEmails::class)->describe('Send emails to users');

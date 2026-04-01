@@ -21,6 +21,7 @@ class ValidUser
             return redirect('/register');
         } else if (!session('user')) {
             return redirect('/login');
+                // return response()->json(['message' => 'Unauthorized'], 401);
         }
         return $next($request);
     }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\WelcomeEmail;
 use App\Jobs\EmailJob;
 
+
 class PostController extends Controller
 {
     /**
@@ -49,6 +50,13 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
+            // Image::resizeImage($request->file('image'), 800, 600);
+            $dimensions = getimagesize($request->file('image'));
+            $width = $dimensions[0];
+            $height = $dimensions[1];
+            if ($width > 800 || $height > 600) {
+                return back()->withErrors(['image' => 'Image dimensions should not exceed 800x600 pixels.']);
+            }
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $imageName);
             $validate['image'] = 'images/' . $imageName;
