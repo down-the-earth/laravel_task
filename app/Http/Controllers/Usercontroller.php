@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 
 class Usercontroller extends Controller
@@ -15,7 +16,10 @@ class Usercontroller extends Controller
     public function index()
     {
         // Profile page
-        $user = User::find($userId = session('user')->id);
+        // $user = Cache::remember('user_' . session('user')->id, 60, function () {
+        //     return User::find(session('user')->id);
+        // });
+        $user = User::find(session('user')->id);
         // return $user;
         return view('profile', compact('user'));
     }

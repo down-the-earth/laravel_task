@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Jobs\EmailJob;
+use App\Mail\WelcomeEmail;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\WelcomeEmail;
-use App\Jobs\EmailJob;
 
 
 class PostController extends Controller
@@ -18,12 +19,13 @@ class PostController extends Controller
      */
     public function index()
     {
-
+    
         $posts = Post::with('user', 'comments.user')
             ->whereNotIn('user_id', [session('user')->id])
             ->orderBy('created_at', 'desc')
             ->get();
 
+            
 
         return view('post', compact('posts'));
         // return  $posts;
@@ -78,7 +80,10 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        $post = Post::find($id);
+        $post = Cache::remember('post_' . $id, 60, function () use ($id) {
+            return Post::find($id);
+        });
+        // $post = Post::find($id);
         return view('edit_post', compact('post'));
     }
 

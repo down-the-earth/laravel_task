@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Models\Post;
+use App\Models\User;
 use App\Rules\Loginrule;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
@@ -38,10 +39,14 @@ class LoginController extends Controller
 
             // Check if the user's email is verified using the defined gate
             if (Gate::allows('verify-email')) {
+                // Cache::remember('user_' . session('user')->id, 60, function () {
+                //     return User::find(session('user')->id);
+                // });
                 return redirect()->route('post.index')->with('success', 'Login successful!');
             } else {
                 Auth::logout();
                 Session::flush();
+                // Cache::forget('user_' . session('user')->id);
                 return back()->withErrors(['email' => 'Please verify your email before logging in.']);
             }
             // return redirect()->route('post.index')->with('success', 'Login successful!');
@@ -54,6 +59,7 @@ class LoginController extends Controller
     {
         Auth::logout();
         Session::flush();
+        Cache::forget('user_');
         return redirect()->route('login')->with('success', 'Logout successful!');
     }
 
