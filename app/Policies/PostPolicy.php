@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Models\User;
-
+use App\Models\Post;
 class PostPolicy
 {
     /**
@@ -14,9 +14,15 @@ class PostPolicy
         // 
     }
 
+    // Updating Post By its owner
+    public function update(User $user, Post $post)
+    {
+        return $user->id === $post->user_id;
+    }
+
 
     
-    public function delete(User $user, $post)
+    public function delete(User $user,Post $post)
     {
         return $user->id === $post->user_id;
     }

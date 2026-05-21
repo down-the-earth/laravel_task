@@ -37,9 +37,11 @@
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
+                
             </div>
         </div>
         @endforeach
+        {{ $posts->links() }}
 
         <h1>Laravel 10 Yajra Datatables Tutorial - ItSolutionStuff.com</h1>
 
@@ -50,8 +52,10 @@
                 <tr>
 
                     <th>No</th>
+                    <th>Image</th>
 
                     <th>Title</th>
+
 
                     <th>Content</th>
 
@@ -86,11 +90,17 @@
                         data: 'id',
                         name: 'id'
                     },
+                    {
+                        data: 'image',
+                        name: 'image'
+                    },
 
                     {
                         data: 'title',
                         name: 'title'
                     },
+
+                   
 
                     {
                         data: 'content',

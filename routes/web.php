@@ -5,6 +5,7 @@ use App\Http\Controllers\Emailcontroller;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\Usercontroller;
+use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\ValidUser;
 use App\Jobs\EmailJob;
 use Illuminate\Support\Facades\Artisan;
@@ -17,15 +18,15 @@ use Illuminate\Support\Facades\Route;
 Route::redirect('/', '/login');
 Route::get('/register', function () {
     return view('register');
-});
+})->name('register');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.submit');
 
 
-Route::resource('profile', Usercontroller::class)->names('profile');
+Route::resource('profile', Usercontroller::class)->names('profile')->middleware(AuthMiddleware::class);
 
-Route::middleware([ValidUser::class])->prefix('/task')->group(function () {
+Route::middleware([AuthMiddleware::class,ValidUser::class])->prefix('task')->group(function () {
     // Route::get('/posts', function () {
     //     return view('post');
     // })->name('posts');

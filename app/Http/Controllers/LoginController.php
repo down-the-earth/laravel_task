@@ -65,16 +65,28 @@ class LoginController extends Controller
 
     public function mypost()
     {
-        // $posts = Post::where('user_id', session('user')->id)->get();
-        $posts = Post::paginate(1);
+        $posts = Post::where('user_id', session('user')->id)->paginate(2);
+        
+        // $posts = Post::paginate(1);
+        // $posts = Cache::remember('posts',60,function(){
+        //   return  Post::where('user_id', session('user')->id)->paginate(2);
+        // });
 
         if (request()->ajax()) {
 
-            $data = Post::select('*');
+            $data = auth()->user()->posts()->latest()->get();
 
             return Datatables::of($data)
 
                 ->addIndexColumn()
+                ->addColumn('image', function ($row) {
+                    
+                $url = asset($row->image); 
+
+                    return '<img src="' . $url . '" width="100" height="100"/>';
+
+                })
+                ->escapeColumns([])
 
                 ->addColumn('action', function ($row) {
 

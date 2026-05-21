@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Postupdate;
 use App\Jobs\EmailJob;
 use App\Mail\WelcomeEmail;
 use App\Models\Post;
 use App\Models\User;
+use App\Observers\PostObserver;
+use App\Policies\PostPolicy;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -14,18 +18,24 @@ use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
     
-        $posts = Post::with('user', 'comments.user')
-            ->whereNotIn('user_id', [session('user')->id])
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // $posts = Post::with('user', 'comments.user')
+        //     ->whereNotIn('user_id', [session('user')->id])
+        //     ->orderBy('created_at', 'desc')
+        //     ->get();
 
-            
+            $posts=  Cache::remember('posts', 60, function () {
+            return Post::with('user', 'comments.user')
+                ->whereNotIn('user_id', [session('user')->id])
+                ->orderBy('created_at', 'desc')
+                ->get();
+        });
 
         return view('post', compact('posts'));
         // return  $posts;
@@ -51,20 +61,34 @@ class PostController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            // Image::resizeImage($request->file('image'), 800, 600);
-            $dimensions = getimagesize($request->file('image'));
-            $width = $dimensions[0];
-            $height = $dimensions[1];
-            if ($width > 800 || $height > 600) {
-                return back()->withErrors(['image' => 'Image dimensions should not exceed 800x600 pixels.']);
+        // dd($validate);
+
+        try{
+            if ($request->hasFile('image')) {
+                // Image::resizeImage($request->file('image'), 800, 600);
+                $dimensions = getimagesize($request->file('image'));
+                $width = $dimensions[0];
+                $height = $dimensions[1];
+                if ($width > 800 || $height > 600) {
+                    return back()->withErrors(['image' => 'Image dimensions should not exceed 800x600 pixels.']);
+                }
+                $imageName = time() . '.' . $request->image->extension();
+                $request->image->move(public_path('images'), $imageName);
+                $validate['image'] = 'images/' . $imageName;
             }
-            $imageName = time() . '.' . $request->image->extension();
-            $request->image->move(public_path('images'), $imageName);
-            $validate['image'] = 'images/' . $imageName;
+            
+           $save= Post::create($validate);
+           if($save){
+            return redirect()->route('post.index')->with('success', 'Post created successfully!');
+           }else{
+            return back()->withErrors(['error' => 'An error occurred while creating the post. Please try again.']);
+           }
+           
+        }Catch(\Exception $e){
+            return back()->withErrors(['error' => 'An error occurred while creating the post. Please try again.']);
         }
-        Post::create($validate);
-        return redirect()->route('post')->with('success', 'Post created successfully!');
+
+      
     }
 
     /**
@@ -90,15 +114,20 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,Post $post)
     {
+        $this->authorize('update', $post);
         $validate = $request->validate([
             'title' => 'required',
             'content' => 'required',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            // 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-        $post = Post::find($id);
+
+        // $post = Post::find($id);
         if ($request->hasFile('image')) {
+            $validate = $request->validate([
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
             $imageName = time() . '.' . $request->image->extension();
             $request->image->move(public_path('images'), $imageName);
             $validate['image'] = 'images/' . $imageName;
@@ -106,20 +135,24 @@ class PostController extends Controller
             if ($post->image && file_exists(public_path($post->image))) {
                 unlink(public_path($post->image));
             }
+            $post->update($validate);
+        dispatch(new EmailJob($validate['image']));
+        }else{
+            $post->update($validate);
+            Postupdate::dispatch($post);
         }
 
-        $post->update($validate);
-        dispatch(new EmailJob($validate['image']));
+        
         return redirect()->route('mypost')->with('success', 'Post updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Post $post)
     {
-        $id = Post::find($id);
-        $id->delete();
+        $this->authorize('delete', $post);
+        $post->delete();
         return redirect()->route('mypost')->with('success', 'Post deleted successfully!');
     }
 }

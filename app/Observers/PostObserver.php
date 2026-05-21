@@ -3,9 +3,15 @@
 namespace App\Observers;
 
 use App\Models\POST;
-
+use Illuminate\Support\Str;
 class PostObserver
 {
+    public function creating(POST $post)
+    {
+        $slug = Str::slug($post->title);
+        $count = POST::where('slug', 'LIKE', "{$slug}%")->count();
+        $post->slug = $count ? "{$slug}-{$count}" : $slug;
+    }
     /**
      * Handle the POST "created" event.
      */
@@ -14,6 +20,14 @@ class PostObserver
         //
     }
 
+    public function updating(POST $post)
+    {
+        if ($post->isDirty('title')) {
+            $slug = Str::slug($post->title);
+            $count = POST::where('slug', 'LIKE', "{$slug}%")->where('id', '!=', $post->id)->count();
+            $post->slug = $count ? "{$slug}-{$count}" : $slug;
+        }
+    }
 
     /**
      * Handle the POST "updated" event.

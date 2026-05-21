@@ -2,14 +2,16 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\Models\Post;
-use App\Observers\PostObserver;
 use App\Models\User;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
+use App\Observers\PostObserver;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\ServiceProvider;
+use App\Policies\PostPolicy;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -25,7 +27,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Bootstarping any application services.
+        Paginator::useBootstrapFive();
+
+        
+
         Post::observe(PostObserver::class);
+        Gate::policy(Post::class, PostPolicy::class);
 
         Gate::define('verify-email', function (User $user) {
             return $user->email_verified_at !== null;

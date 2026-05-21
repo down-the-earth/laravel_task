@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\UserRegister;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -46,6 +47,7 @@ class Usercontroller extends Controller
         $User = User::create($req);
         // dd($User);
         if ($User) {
+            UserRegister::dispatch($User);
             // return $User;
             return redirect()->route('login')->with('success', 'User registered successfully!');
         } else {

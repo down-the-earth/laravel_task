@@ -33,7 +33,7 @@ class CommentController extends Controller
     {
         $validate = $request->validate([
             'post_id' => 'required|exists:posts,id',
-            'user_id' => 'required|exists:users,id',
+            // 'user_id' => 'required|exists:users,id',
             'content' => 'required',
         ]);
 

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class ValidUser
+class AuthMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,13 +16,8 @@ class ValidUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // echo "Middleware is working";
-        if (!Auth::check()) {
-            return redirect('/register');
-        } 
-        else if (!session('user')) {
-            return redirect('/login');
-                // return response()->json(['message' => 'Unauthorized'], 401);
+        if(!Auth::check()){
+            return redirect()->route('login');
         }
         return $next($request);
     }
